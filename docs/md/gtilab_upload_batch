@@ -1,0 +1,87 @@
+# gitlab批量上传shell脚本
+
+## 一、获取群组ID
+方法一：通过 GitLab 网页界面获取
+登录 GitLab 后，进入目标群组（点击左侧导航栏的「Groups」，找到并进入你的群组）。
+进入群组主页后，查看浏览器地址栏的 URL，格式通常为：
+https://你的GitLab地址/groups/群组名称或路径/-/...
+其中，群组名称或路径 前面的数字就是群组 ID。
+例如：
+若 URL 为 https://gitlab.example.com/groups/123-my-team/-/issues，则群组 ID 是 123。
+若 URL 为 https://gitlab.com/groups/abc-projects/-/settings，可通过页面源码确认：按 F12 打开开发者工具，搜索 group_id，通常能找到类似 data-group-id="456" 的字段，其中 456 就是群组 ID。
+方法二：通过 GitLab API 获取
+如果需要批量获取或通过脚本获取，可使用 GitLab API：
+执行以下 curl 命令（替换你的 GitLab 地址和私人令牌）：
+bash
+curl --header "Private-Token: 你的私人令牌" "https://你的GitLab地址/api/v4/groups"
+
+
+响应结果是 JSON 数组，每个群组对象中的 id 字段就是群组 ID，例如：
+json
+[
+  {
+    "id": 789,
+    "name": "我的开发群组",
+    "path": "my-dev-group",
+    ...
+  }
+]
+
+
+其中 789 即为该群组的 ID。
+获取群组 ID 后，在批量上传脚本中配置 GROUP_ID 变量，即可将项目自动归属到指定群组中。
+
+## 二、获取token
+获取私人令牌（Private Token）的步骤
+登录 GitLab 账号
+打开你的 GitLab 服务器地址（如 https://gitlab.com 或私有部署的 GitLab），登录你的账号。
+进入个人设置
+点击页面右上角的头像，在下拉菜单中选择 Preferences（偏好设置）或 Settings（设置）。
+进入访问令牌页面
+在左侧导航栏中，找到并点击 Access Tokens（访问令牌）选项（不同版本可能显示为 Personal Access Tokens）。
+创建新令牌
+在「Add a personal access token」区域：
+Token name：输入一个名称（如 batch-upload-token，用于标识令牌用途）。
+Expiration date：可选，设置令牌过期时间（留空则永久有效）。
+Scopes：勾选所需权限，必须勾选 api 权限（批量上传项目需要通过 API 操作），其他权限按需选择（如仅上传项目，仅勾选 api 即可）。
+生成并保存令牌
+点击 Create personal access token 按钮，生成令牌。
+重要：生成的令牌只会显示一次，务必立即复制并保存到安全位置（如记事本），关闭页面后无法再次查看。
+注意事项
+令牌权限遵循「最小必要原则」，仅勾选需要的权限（批量上传项目只需 api 权限）。
+如果令牌泄露或过期，可在同一页面找到对应的令牌，点击 Revoke 撤销，然后重新创建新令牌。
+获取令牌后，将其填入批量上传脚本的 PRIVATE_TOKEN 变量中即可使用。
+## 三、修改hosts
+vim /etc/hosts
+
+17.1.1.1 gitlab.xxx.com
+
+## 四、安装git
+使用包管理器安装
+大部分常见 Linux 发行版自带包管理工具，用其安装 Git 简单快捷。
+Debian、Ubuntu 及其衍生版：
+打开终端，运行如下指令：
+bash
+sudo apt update
+sudo apt install git
+
+CentOS 7 及以下版本：
+使用 yum 包管理器，输入以下指令：
+bash
+# 若未启用 EPEL 仓库且安装遇问题，可先启用它
+sudo yum install epel-release  
+sudo yum install git
+
+CentOS 8 及以上版本、Fedora、RHEL：
+这些可用 dnf 包管理器，命令为：
+bash
+sudo dnf install git
+
+或者也能安装包含常用子命令与帮助手册等的 git-all，指令是 sudo dnf install git-all。
+
+## 五、设置用户名
+# 配置用户名（替换为你的用户名）
+git config --global user.name "Your Name"
+
+# 配置邮箱（替换为你的邮箱）
+git config --global user.email "your.email@example.com"

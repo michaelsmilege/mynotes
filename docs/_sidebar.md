@@ -18,10 +18,10 @@
   - 前端
     - [Angular笔记](md/学习笔记/前端/Angular笔记.md)
     - [Ionic3学习笔记](md/学习笔记/前端/Ionic3学习笔记.md)
+    - [jQuery笔记](md/学习笔记/前端/jQuery笔记.md)
     - [Json&Ajax](md/学习笔记/前端/Json&Ajax.md)
     - [Node.JS简单了解](md/学习笔记/前端/Node.JS简单了解.md)
     - [NodeJS](md/学习笔记/前端/NodeJS.md)
-    - [jQuery笔记](md/学习笔记/前端/jQuery笔记.md)
     - [vue笔记](md/学习笔记/前端/vue笔记.md)
   - 设计模式
     - [代理模式](md/学习笔记/设计模式/代理模式.md)
@@ -32,5 +32,9 @@
   - [mind](md/思路想法/mind.md)
 - 网站链接
   - [link](md/网站链接/link.md)
+- 语言
+  - 日语
+  - 英语
+    - [新概念英语表少版](md/语言/英语/新概念英语表少版.md)
 - 问题分析
   - [question](md/问题分析/question.md)
